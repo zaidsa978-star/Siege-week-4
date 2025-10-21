@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated fall scene</title>
+    
+</head>
+<body>
+    
+    <div id="fall-scene-container">
+        <div id="sky"></div>
+        <div id="ground">
+            <div id="cabin-outline"></div>
+            <div id="tree-silhouette-1" class="tree-silhouette"></div>
+            <div id="tree-silhouette-2" class="tree-silhouette"></div>
+        </div>
+
+        <div id="leaf-container"></div>
+        <div id="dust-container"></div>
+
+        <div id="controls-panel">
+            <label for="wind-speed">Wind Speed:</label>
+            <input type="range" id="wind-speed" min="-5" value="0" step="0.5">
+            <span id="wind-display">Calm</span>
+
+            <label for="leaf-density">Leaf-Density:</label>
+            <input type="range" id="leaf-density" min="10" max="150" value="50" step="10">
+            <span id="density-display">50 Leaves</span>
+
+            <button id="day-night-toggle">Toggle Day/Night</button>
+        </div>
+    </div>
+    <style>
+        
+        :root {
+
+            --day-sky-color-top: #87CEEB;
+            --day-sky-color-bottom: #ADD8ED;
+            --day-ground-color: #8B4513;
+            --day-leaf-shadow: rgba(0, 0, 0, 0.2);
+
+            --night-sky-color-top: #87CEEB;
+            --night-sky-color-bottom: #2C3E50;
+            --night-ground-color: #362818;
+            --night-leaf-shadow: rgba(255, 255, 255, 0.05);
+
+            --scene-trantition-duration: 2s;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #fall-scene-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            transition: background-color var(--scene-trantition-duration) ease-in-out;
+        }
+
+
+    </style>
+</body>
+</html>
