@@ -66,6 +66,107 @@
             transition: background-color var(--scene-trantition-duration) ease-in-out;
         }
 
+        #sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(to bottom, var(--day-sky-color-top), var(--day-sky-color-bottom));
+            transition: background var(--scene-trantition-duration) ease-in-out;
+        }
+
+        #ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background-color: var(--day-ground-color);
+            transition: background-color var(--scene-trantition-duration) ease-in-out;
+            border-top: 5px solid rgba(0,0,0,0.1);
+            z-index: 5;
+        }
+
+        .night-mode #sky {
+            background: linear-gradient(to bottom, var(--night-sky-color-top), var(--night-sky-color-bottom));
+        }
+        
+        .night-mode #ground {
+            background-color: var(--night-ground-color);
+        }
+
+        .tree-silhouette-1 {
+            left:10%;
+            height: 200px;
+            width: 120px;
+        }
+
+        #tree-silhouette-2 {
+            right: 15%;
+            height: 180px;
+            width: 100px;
+            transform: scaleX(-1);
+        }
+
+        .night-mode .tree-silhouette {
+            position: absolute;
+            bottom: 30%;
+            left: 45%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 100px;
+            background-color: transparent;
+            border: 3px solid #362818;
+            border-top: none;
+            z-index: 15;
+            transition: border-color var(--scene-trantition-duration);
+        }
+
+        #cabin-outline::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left:-10px;
+            width: 170px;
+            height: 50px;
+            background-color: #362818;
+            transform: skewX(-20deg);
+            transform-origin: left top;
+        }
+
+        #leaf-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #FFA500;
+            border-radius: 0 50% 50% 50% / 50%;
+            transform-origin: 50% 50%;
+            opacity: 0.8;
+            will-change: transform, opacity;
+            box-shadow: 1px 1px 2px var(--day-leaf-shadow);
+            transition: box-shadow var(--scene-trantition-duration);
+            }
+
+            .night-mode .leaf {
+                box-shadow: 1px 1px 2px var(--night-leaf-shadow);
+            }
+
+            .leaf.red { background-color: #FF0000; }
+            .leaf.gold { background-color: #FFD700; border-radius: 50% 0 50% / 50%; }
+            .leaf.brown { background-color: #8B4513; }
+            .leaf.yellow { background-color: #FFFF00; }
+            .leaf.orange { background-color: #FF4500; }
+            
 
     </style>
 </body>
