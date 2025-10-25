@@ -15,13 +15,13 @@
             <div id="tree-silhouette-1" class="tree-silhouette"></div>
             <div id="tree-silhouette-2" class="tree-silhouette"></div>
         </div>
-
+        
         <div id="leaf-container"></div>
         <div id="dust-container"></div>
 
         <div id="controls-panel">
             <label for="wind-speed">Wind Speed:</label>
-            <input type="range" id="wind-speed" min="-5" value="0" step="0.5">
+            <input type="range" id="wind-speed" min="-5" max="5" value="0" step="0.5">
             <span id="wind-display">Calm</span>
 
             <label for="leaf-density">Leaf-Density:</label>
@@ -45,7 +45,7 @@
             --night-ground-color: #362818;
             --night-leaf-shadow: rgba(255, 255, 255, 0.05);
 
-            --scene-trantition-duration: 2s;
+            --scene-transition-duration: 2s;
         }
 
         body {
@@ -63,7 +63,7 @@
             height: 100vh;
             position: relative;
             overflow: hidden;
-            transition: background-color var(--scene-trantition-duration) ease-in-out;
+            transition: background-color var(--scene-transition-duration) ease-in-out;
         }
 
         #sky {
@@ -73,7 +73,7 @@
             width: 100%;
             height: 70%;
             background: linear-gradient(to bottom, var(--day-sky-color-top), var(--day-sky-color-bottom));
-            transition: background var(--scene-trantition-duration) ease-in-out;
+            transition: background var(--scene-transition-duration) ease-in-out;
         }
 
         #ground {
@@ -83,7 +83,7 @@
             width: 100%;
             height: 30%;
             background-color: var(--day-ground-color);
-            transition: background-color var(--scene-trantition-duration) ease-in-out;
+            transition: background-color var(--scene-transition-duration) ease-in-out;
             border-top: 5px solid rgba(0,0,0,0.1);
             z-index: 5;
         }
@@ -96,7 +96,7 @@
             background-color: var(--night-ground-color);
         }
 
-        .tree-silhouette-1 {
+        #tree-silhouette-1 {
             left:10%;
             height: 200px;
             width: 120px;
@@ -120,7 +120,7 @@
             border: 3px solid #362818;
             border-top: none;
             z-index: 15;
-            transition: border-color var(--scene-trantition-duration);
+            transition: border-color var(--scene-transition-duration);
         }
 
         #cabin-outline::before {
@@ -154,7 +154,7 @@
             opacity: 0.8;
             will-change: transform, opacity;
             box-shadow: 1px 1px 2px var(--day-leaf-shadow);
-            transition: box-shadow var(--scene-trantition-duration);
+            transition: box-shadow var(--scene-transition-duration);
             }
 
             .night-mode .leaf {
@@ -262,7 +262,105 @@
                 font-weight: bold;
                 color: #ffcc00;
             }
-
     </style>
+
+    <script>
+
+        const sceneContainer = document.getElementById('fall-scene-container');
+        const leafContainer = document.getElementById('leaf-container');
+        const dustContainer = document.getElementById('dust-container');
+        const dayNightToggleBtn = document.getElementById('day-night-toggle');
+        const windSpeedInput = document.getElementById('wind-speed');
+        const windDisplay = document.getElementById('wind-display');
+        const leafDensityInput = document.getElementById('leaf-density');
+        const densityDisplay = document.getElementById('density-display');
+
+        let leaves = [];
+        let currentLeafCount = 0;
+        let maxLeaves = 50;
+        let isNightMode = false;
+        let currentWind = 0;
+        const leafColors = ['red', 'gold', 'brown', 'yellow', 'orange'];
+        const MAX_LEAF_SIZE = 30;
+        const MIN_LEAF_SIZE = 15;
+
+        function resetLeaf(leaf) {
+            leaf.style.left = `${Math.random() * 100}vw`;
+            leaf.style.top = `-20px`;
+
+            leaf.className = 'leaf-animate';
+            leaf.classList.add(leafColors[Math.floor(Math.random() * leafColors.length)]);
+
+            const fallDuration = (Math.random() * 10) + 5;
+            const wobbleDuration = (Math.random() * 3) + 2;
+            const startDelay = -(Math.random() * 10);
+
+            leaf.style.setProperty('--fall-duration', `${fallDuration}s`);
+            leaf.style.setProperty('--wobble-duration', `${wobbleDuration}s`);
+            leaf.style.setProperty('--animation-delay', `${startDelay}s`);
+            leaf.style.setProperty('--wobble-amplitude', `${(Math.random() > 0.5 ? 1 : -1) * (Math.random() * 10 + 5)}px`);
+        }
+
+        function updateLeafPopulation() {
+            while (currentLeafCount < maxLeaves) {
+                const newLeaf = createLeafElement();
+                leaves.push(newLeaf);
+                resetLeaf(newLeaf);
+                currentLeafCount++;
+            }
+            while (currentLeafCount > maxLeaves) {
+                const leafToRemove = leaves.pop();
+                if (leafToRemove) {
+                    leafContainer.removeChild(leafToRemove);
+                    currentLeafCount--;
+                }
+            }
+        }
+
+        function updateLeafPosition() {
+            const windForce = currentWind * 0.05;
+
+            leaves.forEach(leaf => {
+                let currentX = parseFloat(leaf.style.left);
+                currentX += windForce;
+
+                if (currentX < -5) currentX = 105;
+                if (currentX > 105) currentX = -5;
+
+                leaf.style.left = `${currentX}vw`;
+
+                const rect = leaf.getBoundingClientRect();
+                if (rect.top > window.innerHeight) {
+                    resetLeaf(leaf);
+                }
+            });
+
+            requestAnimationFrame(updateLeafPosition);
+        }
+
+        function createDustParticle(x, y, isMouseGust = false) {
+            const particle = document.createElementById('div');
+            particle.classList.add('dust-particle');
+
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+
+            const duration = isMouseGust ? '1s' : `${(Math.random() * 8) + 12}s`;
+            const delay = isMouseGust ? '0s' : `${-(Math.random() * 15)}s`;
+
+            particle.style.setProperty('--dust-duration', duration);
+            particle.style.setProperty('--dust-delay', delay);
+            particle.style.setProperty('--dust-x-drift', `${(Math.random() * 500) - 250}px`);
+
+            dustContainer.appendChild(particle);
+            particle.classList.add('animate');
+
+            setTimeout(() => {
+                dustContainer.removeChild(particle);
+            }, (parseFloat(duration) * 1000) + 100);
+        }
+
+
+    </script>
 </body>
 </html>
